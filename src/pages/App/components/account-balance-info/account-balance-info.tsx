@@ -1,8 +1,8 @@
 import { Typography, Chip, Tooltip, BoxProps } from '@mui/material';
 import React, { FC, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CancelIcon from '@mui/icons-material/Cancel';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 import { useBackgroundDispatch, useBackgroundSelector } from '../../hooks';
 import {
   AccountData,
@@ -13,6 +13,7 @@ import { getAccountEVMData } from '../../../Background/redux-slices/selectors/ac
 import { BorderBox } from '../../../../components/BorderBox';
 import { Row } from '../../../../components/Row';
 import balanceBg from '../../../../assets/img/balanceBg.png';
+import { colors } from '../../../../config/const';
 
 type Props = BoxProps & {
   address: string;
@@ -42,7 +43,8 @@ const AccountBalanceInfo: FC<Props> = ({ address, ...props }) => {
 
   return (
     <BorderBox
-      py={2}
+      pt="32px"
+      pb="20px"
       sx={{
         backgroundImage: `url(${balanceBg})`,
         backgroundSize: 'cover',
@@ -63,18 +65,31 @@ const AccountBalanceInfo: FC<Props> = ({ address, ...props }) => {
         }
       >
         <Chip
-          sx={{ cursor: 'pointer' }}
+          sx={{
+            height: '24px',
+            cursor: 'pointer',
+            border: 'none',
+            fontSize: '14px',
+            fontWeight: 'bold',
+            color: walletDeployed ? colors.success : colors.error,
+            '& .css-6od3lo-MuiChip-label': { p: 0 },
+            '& .MuiChip-icon': {
+              ml: 0,
+              mr: 0.5,
+              fontSize: '18px',
+              fontWeight: 'bold',
+              color: walletDeployed ? colors.success : colors.error,
+            },
+          }}
           onClick={() => navigate('/deploy-account')}
           variant="outlined"
-          color={walletDeployed ? 'success' : 'error'}
-          size="small"
-          icon={walletDeployed ? <CheckCircleIcon /> : <CancelIcon />}
+          icon={walletDeployed ? <CheckIcon /> : <CloseIcon />}
           label={
             accountData === 'loading'
               ? 'Loading deployment status...'
               : walletDeployed
               ? 'Deployed'
-              : 'Not deployed'
+              : 'Not Deployed'
           }
         />
       </Tooltip>
@@ -86,6 +101,7 @@ const AccountBalanceInfo: FC<Props> = ({ address, ...props }) => {
             <Typography
               marginY={0}
               marginRight={1}
+              lineHeight="42px"
               fontSize="42px"
               fontWeight="bold"
               variant="h6"
@@ -96,7 +112,12 @@ const AccountBalanceInfo: FC<Props> = ({ address, ...props }) => {
                   .amount
               }
             </Typography>
-            <Typography marginY={0} fontSize="36px" variant="h6">
+            <Typography
+              marginY={0}
+              lineHeight="42px"
+              fontSize="36px"
+              variant="h6"
+            >
               {activeNetwork.baseAsset.symbol}
             </Typography>
           </Row>
