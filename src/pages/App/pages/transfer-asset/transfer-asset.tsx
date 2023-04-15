@@ -87,7 +87,11 @@ const TransferAsset: FC<Props> = ({ ...props }) => {
               endAdornment={
                 <InputAdornment
                   position="end"
-                  sx={{ color: 'white' }}
+                  sx={{
+                    '& .css-1pnmrwp-MuiTypography-root': {
+                      color: colors.placeholder,
+                    },
+                  }}
                   children="ETH"
                 />
               }
