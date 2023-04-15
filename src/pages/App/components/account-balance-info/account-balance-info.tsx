@@ -12,6 +12,7 @@ import { getActiveNetwork } from '../../../Background/redux-slices/selectors/net
 import { getAccountEVMData } from '../../../Background/redux-slices/selectors/accountSelectors';
 import { BorderBox } from '../../../../components/BorderBox';
 import { Row } from '../../../../components/Row';
+import balanceBg from '../../../../assets/img/balanceBg.png';
 
 type Props = BoxProps & {
   address: string;
@@ -40,18 +41,19 @@ const AccountBalanceInfo: FC<Props> = ({ address, ...props }) => {
   }
 
   return (
-    <BorderBox py={2} {...props}>
+    <BorderBox
+      py={2}
+      sx={{
+        backgroundImage: `url(${balanceBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
+      {...props}
+    >
       <Typography marginBottom={6} fontSize="32px" variant="h6">
         Balance
       </Typography>
-      {/* ETH image */}
-      {/* {activeNetwork.baseAsset.image && (
-        <img
-          height={60}
-          src={activeNetwork.baseAsset.image}
-          alt={`${activeNetwork.baseAsset.name} asset logo`}
-        />
-      )} */}
       {/* deploy */}
       <Tooltip
         title={
