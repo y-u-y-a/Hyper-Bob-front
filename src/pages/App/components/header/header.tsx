@@ -37,10 +37,10 @@ const Header: FC<Props> = ({ ...props }) => {
   };
 
   return (
-    <Row px={4} width="100%" justifyContent="space-between" {...props}>
+    <Row width="100%" justifyContent="space-between" {...props}>
       {/* Logo */}
       <Box sx={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
-        <img height={48} src={logo} className="App-logo" alt="logo" />
+        <img height={32} src={logo} className="App-logo" alt="logo" />
       </Box>
       {/* Switch Chain */}
       <FormControl sx={{ minWidth: 80, color: colors.white }}>

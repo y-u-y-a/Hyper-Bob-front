@@ -4,7 +4,7 @@ import { HeadTitle } from '../../../../components/HeadTitle';
 import { Button } from '../../../../components/Button';
 import { BorderBox } from '../../../../components/BorderBox';
 import { Center } from '../../../../components/Center';
-import logo from '../../../../assets/img/logo.svg';
+import logo from '../../../../assets/img/intro-logo.svg';
 
 const Intro = () => {
   const navigate = useNavigate();
@@ -12,7 +12,7 @@ const Intro = () => {
   return (
     <Center minHeight="100vh" height="100%" width="60%" marginX="auto">
       <BorderBox>
-        <img height={48} src={logo} className="App-logo" alt="logo" />
+        <img height={36} src={logo} className="App-logo" alt="logo" />
         <HeadTitle marginTop="20px" marginBottom="96px">
           Beautifully friendly <br />
           crypto wallet.

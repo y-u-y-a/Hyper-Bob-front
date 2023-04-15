@@ -51,7 +51,7 @@ const AccountBalanceInfo: FC<Props> = ({ address, ...props }) => {
       }}
       {...props}
     >
-      <Typography marginBottom={6} fontSize="32px" variant="h6">
+      <Typography marginBottom={18} fontSize="32px" variant="h6">
         Balance
       </Typography>
       {/* deploy */}
