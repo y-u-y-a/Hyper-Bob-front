@@ -9,7 +9,6 @@ export const FormInput: FC<OutlinedInputProps> = ({ sx, ...props }) => {
       id="name"
       type="text"
       sx={{
-        borderColor: colors.white,
         color: colors.white,
         '& label': {
           color: colors.white,
@@ -18,8 +17,15 @@ export const FormInput: FC<OutlinedInputProps> = ({ sx, ...props }) => {
           color: `${colors.white} !important`,
         },
         '& fieldset': {
-          borderColor: colors.white,
+          boxShadow: 'none !important',
+          borderColor: colors.placeholder,
         },
+        '&:hover fieldset': {
+          outline: 'none',
+          boxShadow: 'none !important',
+          borderColor: `${colors.placeholder} !important`,
+        },
+        // '& .Mui-focused': {},
         ...sx,
       }}
       {...props}
