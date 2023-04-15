@@ -1,76 +1,55 @@
-import React, { useCallback } from 'react';
+import React, { FC } from 'react';
+import { ButtonProps, Stack } from '@mui/material';
+import WalletIcon from '@mui/icons-material/Wallet';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
-import StoreIcon from '@mui/icons-material/Store';
-import { Avatar, Stack, Tooltip, Typography, useTheme } from '@mui/material';
-import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
-import { ethers } from 'ethers';
+import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import { useNavigate } from 'react-router-dom';
+import { MainButton } from '../../../../components/MainButton';
+import { colors } from '../../../../config/const';
 
-const TransferAssetButton = ({ activeAccount }: { activeAccount: string }) => {
-  const theme = useTheme();
+type Props = ButtonProps & {
+  activeAccount: string;
+};
+
+const TransferAssetButton: FC<Props> = ({ activeAccount }) => {
   const navigate = useNavigate();
 
-  const sendMoney = useCallback(async () => {
-    // if (window.ethereum) {
-    //   const accounts = await window.ethereum.request({
-    //     method: 'eth_requestAccounts',
-    //   });
-    //   const txHash = await window.ethereum.request({
-    //     method: 'eth_sendTransaction',
-    //     params: [
-    //       {
-    //         from: activeAccount,
-    //         to: ethers.constants.AddressZero,
-    //         data: '0x',
-    //       },
-    //     ],
-    //   });
-    //   console.log(txHash);
-    // }
-  }, [activeAccount]);
+  // const sendToBob = useCallback(async () => {
+  //   console.log('did we come here?', window.ethereum);
+  //   if (window.ethereum) {
+  //     // ポップアップ起動のため'eth_requestAccounts'のメッセージイベントでポップアップ起動している
+  //     await window.ethereum.request({ method: 'eth_requestAccounts' });
+  //     // 初期Transactionを作成
+  //     const txHash = await window.ethereum.request({
+  //       method: 'eth_sendTransaction',
+  //       params: [
+  //         {
+  //           from: activeAccount,
+  //           to: ethers.constants.AddressZero,
+  //           data: '0x',
+  //         },
+  //       ],
+  //     });
+  //     console.log(txHash);
+  //   }
+  // }, [activeAccount]);
 
   return (
-    <Stack direction={'row'} spacing={4}>
-      <Tooltip title="Coming soon">
-        <Stack
-          justifyContent="center"
-          alignItems="center"
-          spacing={'4px'}
-          sx={{ cursor: 'not-allowed', opacity: 0.5 }}
-        >
-          <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
-            <StoreIcon />
-          </Avatar>
-          <Typography variant="button">Buy</Typography>
-        </Stack>
-      </Tooltip>
-      <Stack
-        justifyContent="center"
-        alignItems="center"
-        spacing={'4px'}
-        sx={{ cursor: 'pointer' }}
-      >
-        <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
-          <SendRoundedIcon
-            onClick={() => navigate('/transfer-assets')}
-            sx={{ transform: 'rotate(-45deg)', ml: '4px', mb: '6px' }}
-          />
-        </Avatar>
-        <Typography variant="button">Send</Typography>
-      </Stack>
-      <Tooltip title="Coming soon">
-        <Stack
-          justifyContent="center"
-          alignItems="center"
-          spacing={'4px'}
-          sx={{ cursor: 'not-allowed', opacity: 0.5 }}
-        >
-          <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
-            <SwapHorizIcon />
-          </Avatar>
-          <Typography variant="button">Swap</Typography>
-        </Stack>
-      </Tooltip>
+    <Stack direction="row" spacing={2} width="100%">
+      <MainButton
+        title="Buy Crypt"
+        icon={<WalletIcon sx={{ color: colors.dark }} />}
+      />
+      <MainButton
+        title="Send"
+        onClick={() => navigate('/transfer-assets')}
+        icon={<SendRoundedIcon sx={{ color: colors.dark }} />}
+        // onClick={sendToBob}
+      />
+      <MainButton
+        title="Swap"
+        icon={<ChangeCircleIcon sx={{ color: colors.dark }} />}
+      />
     </Stack>
   );
 };

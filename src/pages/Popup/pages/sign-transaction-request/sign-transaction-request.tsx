@@ -1,16 +1,7 @@
 import { UserOperationStruct } from '@account-abstraction/contracts';
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  Paper,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
-import { BigNumber, ethers } from 'ethers';
-import React, { useCallback, useState } from 'react';
+import { Box, Stack, Typography } from '@mui/material';
+import { ethers } from 'ethers';
+import React, { FC, useCallback, useState } from 'react';
 import {
   AccountImplementations,
   ActiveAccountImplementation,
@@ -27,32 +18,26 @@ import { selectCurrentOriginPermission } from '../../../Background/redux-slices/
 import { getActiveNetwork } from '../../../Background/redux-slices/selectors/networkSelectors';
 import {
   selectCurrentPendingSendTransactionRequest,
+  selectCurrentPendingSendTransactionsRequest,
   selectCurrentPendingSendTransactionUserOp,
 } from '../../../Background/redux-slices/selectors/transactionsSelectors';
 import {
   createUnsignedUserOp,
   rejectTransaction,
   sendTransaction,
-  setUnsignedUserOperation,
+  // setUnsignedUserOperation,
 } from '../../../Background/redux-slices/transactions';
 import { EthersTransactionRequest } from '../../../Background/services/types';
 import AccountInfo from '../../components/account-info';
-import OriginInfo from '../../components/origin-info';
 import Config from '../../../../exconfig';
+import { Button } from '../../../../components/Button';
+import { BorderBox } from '../../../../components/BorderBox';
+import { RejectButton } from '../../../../components/RejectButton';
 
 const SignTransactionComponent =
   AccountImplementations[ActiveAccountImplementation].Transaction;
 
-const SignTransactionConfirmation = ({
-  activeNetwork,
-  activeAccount,
-  accountInfo,
-  originPermission,
-  transactions,
-  userOp,
-  onReject,
-  onSend,
-}: {
+type Props = {
   activeNetwork: any;
   activeAccount: any;
   accountInfo: any;
@@ -61,178 +46,77 @@ const SignTransactionConfirmation = ({
   userOp: UserOperationStruct;
   onReject: any;
   onSend: any;
+};
+
+/** 送金内容の確認コンポーネント */
+const SignTransactionConfirmation: FC<Props> = ({
+  activeNetwork,
+  activeAccount,
+  accountInfo,
+  transactions,
+  onReject,
+  onSend,
 }) => {
-  const [showAddPaymasterUI, setShowAddPaymasterUI] = useState<boolean>(false);
-  const [addPaymasterLoader, setAddPaymasterLoader] = useState<boolean>(false);
-  const [paymasterError, setPaymasterError] = useState<string>('');
-  const [paymasterUrl, setPaymasterUrl] = useState<string>('');
-  const backgroundDispatch = useBackgroundDispatch();
-
-  const addPaymaster = useCallback(async () => {
-    console.log(paymasterUrl);
-    setAddPaymasterLoader(true);
-    if (paymasterUrl) {
-      const paymasterRPC = new ethers.providers.JsonRpcProvider(paymasterUrl, {
-        name: 'Paymaster',
-        chainId: parseInt(activeNetwork.chainID),
-      });
-      try {
-        const paymasterResp = await paymasterRPC.send(
-          'eth_getPaymasterAndDataSize',
-          [userOp]
-        );
-        backgroundDispatch(
-          setUnsignedUserOperation({
-            ...userOp,
-            paymasterAndData: paymasterResp,
-            verificationGasLimit: paymasterResp.verificationGasLimit,
-          })
-        );
-      } catch (e) {
-        console.log(e);
-        setPaymasterError('Paymaster url returned error');
-      }
-      setAddPaymasterLoader(false);
-    }
-  }, [activeNetwork.chainID, backgroundDispatch, paymasterUrl, userOp]);
-
   return (
-    <Container>
-      <Box sx={{ p: 2 }}>
-        <Typography textAlign="center" variant="h6">
-          Send transaction request
-        </Typography>
-      </Box>
+    <Box px={2} color="white">
+      <Typography
+        my={4}
+        fontSize="28px"
+        fontWeight="bold"
+        children="Send Transaction Request"
+      />
       {activeAccount && (
         <AccountInfo activeAccount={activeAccount} accountInfo={accountInfo} />
       )}
       <Stack spacing={2} sx={{ position: 'relative', pt: 2, mb: 4 }}>
-        <OriginInfo permission={originPermission} />
-        <Typography variant="h6" sx-={{ p: 2 }}>
-          Paymaster Info
-        </Typography>
-        {!showAddPaymasterUI && (
-          <Paper sx={{ p: 2 }}>
-            <Typography variant="body2">
-              {userOp.paymasterAndData === '0x'
-                ? 'No paymaster has been used'
-                : ';'}
-            </Typography>
-            <Button onClick={() => setShowAddPaymasterUI(true)} variant="text">
-              Add custom
-            </Button>
-          </Paper>
-        )}
-        {showAddPaymasterUI && (
-          <Paper sx={{ p: 2 }}>
-            <TextField
-              value={paymasterUrl}
-              onChange={(e) => setPaymasterUrl(e.target.value)}
-              sx={{ width: '100%' }}
-              label="Paymaster URL"
-              variant="standard"
-            />
-            {paymasterError}
-            <Box
-              justifyContent="space-around"
-              alignItems="center"
-              display="flex"
-              sx={{ p: '16px 0px' }}
-            >
-              <Button
-                sx={{ width: 150 }}
-                variant="outlined"
-                onClick={() => {
-                  setShowAddPaymasterUI(false);
-                  setAddPaymasterLoader(false);
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                disabled={addPaymasterLoader}
-                sx={{ width: 150, position: 'relative' }}
-                variant="contained"
-                onClick={addPaymaster}
-              >
-                Add
-                {addPaymasterLoader && (
-                  <CircularProgress
-                    size={24}
-                    sx={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      marginTop: '-12px',
-                      marginLeft: '-12px',
-                    }}
-                  />
-                )}
-              </Button>
-            </Box>
-          </Paper>
-        )}
-        <Typography variant="h6" sx-={{ p: 2 }}>
-          {transactions.length > 1 ? ' Transactions data' : 'Transaction data'}
-        </Typography>
+        {/* Transactions Data */}
+        <Typography
+          mt={2}
+          fontSize="24px"
+          fontWeight="bold"
+          children={
+            transactions.length > 1 ? ' Transactions Data' : 'Transaction Data'
+          }
+        />
         <Stack spacing={2}>
           {transactions.map((transaction: EthersTransactionRequest, index) => (
-            <Paper key={index} sx={{ p: 2 }}>
-              <Typography variant="subtitle2" sx={{ mb: 2 }}>
-                To:{' '}
-                <Typography component="span" variant="body2">
+            <BorderBox p={2} key={index}>
+              <Typography mb={1} fontSize="14px">
+                To{' '}
+                <Typography fontWeight="bold" noWrap>
                   {transaction.to}
                 </Typography>
               </Typography>
-              <Typography variant="subtitle2" sx={{ mb: 2 }}>
-                Data:{' '}
-                <Typography component="span" variant="body2">
+              <Typography mb={1} fontSize="14px">
+                Data{' '}
+                <Typography fontWeight="bold">
                   {transaction.data?.toString()}
                 </Typography>
               </Typography>
-              <Typography variant="subtitle2" sx={{ mb: 2 }}>
-                Value:{' '}
-                <Typography component="span" variant="body2">
+              <Typography mb={1} fontSize="14px">
+                Value{' '}
+                <Typography fontWeight="bold">
                   {transaction.value
                     ? ethers.utils.formatEther(transaction.value)
                     : 0}{' '}
                   {activeNetwork.baseAsset.symbol}
                 </Typography>
               </Typography>
-            </Paper>
+            </BorderBox>
           ))}
         </Stack>
       </Stack>
-      {!showAddPaymasterUI && (
-        <Paper
-          elevation={3}
-          sx={{
-            position: 'sticky',
-            bottom: 0,
-            left: 0,
-            width: '100%',
-          }}
-        >
-          <Box
-            justifyContent="space-around"
-            alignItems="center"
-            display="flex"
-            sx={{ p: 2 }}
-          >
-            <Button sx={{ width: 150 }} variant="outlined" onClick={onReject}>
-              Reject
-            </Button>
-            <Button
-              sx={{ width: 150 }}
-              variant="contained"
-              onClick={() => onSend()}
-            >
-              Send
-            </Button>
-          </Box>
-        </Paper>
-      )}
-    </Container>
+      <Stack
+        display="flex"
+        flexDirection="row"
+        alignItems="center"
+        justifyContent="space-between"
+      >
+        <RejectButton fullWidth title="Reject" onClick={onReject} />
+        <Box width="32px" />
+        <Button fullWidth title="Send" onClick={onSend} />
+      </Stack>
+    </Box>
   );
 };
 
@@ -254,6 +138,10 @@ const SignTransactionRequest = () => {
     selectCurrentPendingSendTransactionRequest
   );
 
+  const sendTransactionsRequest = useBackgroundSelector(
+    selectCurrentPendingSendTransactionsRequest
+  );
+
   const pendingUserOp = useBackgroundSelector(
     selectCurrentPendingSendTransactionUserOp
   );
@@ -265,13 +153,19 @@ const SignTransactionRequest = () => {
     })
   );
 
+  /**TODO: 確認画面のSendボタン押下後の処理 */
   const onSend = useCallback(
     async (_context?: any) => {
+      // TODO: _contextのオブジェクトをJSONパースしてもエラーとなる
+      // nverting circular structure to JSON
+      console.log({ activeAccount });
+      console.log({ _context });
+      console.log({ context });
       if (activeAccount)
         await backgroundDispatch(
           sendTransaction({
             address: activeAccount,
-            context: _context || context,
+            context: JSON.parse(JSON.stringify(_context)) || context,
           })
         );
       window.close();
@@ -282,6 +176,7 @@ const SignTransactionRequest = () => {
   const onComplete = useCallback(
     async (modifiedTransaction: EthersTransactionRequest, context?: any) => {
       if (activeAccount) {
+        // NOTE: bundlerに送るユーザーオペレーションを作成している
         backgroundDispatch(createUnsignedUserOp(activeAccount));
         setContext(context);
         if (Config.showTransactionConfirmationScreen === false) {
@@ -302,7 +197,8 @@ const SignTransactionRequest = () => {
   if (
     stage === 'sign-transaction-confirmation' &&
     pendingUserOp &&
-    sendTransactionRequest.transactionRequest
+    sendTransactionsRequest.transactionsRequest
+    // sendTransactionRequest.transactionRequest
   )
     return (
       <SignTransactionConfirmation
@@ -312,7 +208,7 @@ const SignTransactionRequest = () => {
         originPermission={originPermission}
         onReject={onReject}
         onSend={onSend}
-        transactions={[sendTransactionRequest.transactionRequest]}
+        transactions={sendTransactionsRequest.transactionsRequest || []}
         userOp={pendingUserOp}
       />
     );

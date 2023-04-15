@@ -1,72 +1,31 @@
-import {
-  Button,
-  CardActions,
-  CardContent,
-  CircularProgress,
-  Stack,
-  Typography,
-} from '@mui/material';
-import React from 'react';
-import { EthersTransactionRequest } from '../../../Background/services/provider-bridge';
+import React, { FC, useEffect } from 'react';
+import { useBackgroundDispatch } from '../../../App/hooks';
+import { sendTransactionsRequest } from '../../../Background/redux-slices/transactions';
+import { EthersTransactionRequest } from '../../../Background/services/types';
 import { TransactionComponentProps } from '../types';
 
-const Transaction = ({
-  transaction,
-  onComplete,
-  onReject,
-}: TransactionComponentProps) => {
-  const [loader, setLoader] = React.useState<boolean>(false);
+type Props = TransactionComponentProps & {};
 
-  return (
-    <>
-      <CardContent>
-        <Typography variant="h3" gutterBottom>
-          Dummy Account Component
-        </Typography>
-        <Typography variant="body1" color="text.secondary">
-          You can show as many steps as you want in this dummy component. You
-          need to call the function <b>onComplete</b> passed as a props to this
-          component. <br />
-          <br />
-          The function takes a modifiedTransactions & context as a parameter,
-          the context will be passed to your AccountApi when creating a new
-          account. While modifiedTransactions will be agreed upon by the user.
-          <br />
-          This Component is defined in exported in{' '}
-        </Typography>
-        <Typography variant="caption">
-          trampoline/src/pages/Account/components/transaction/index.ts
-        </Typography>
-      </CardContent>
-      <CardActions sx={{ pl: 4, pr: 4, width: '100%' }}>
-        <Stack spacing={2} sx={{ width: '100%' }}>
-          <Button
-            disabled={loader}
-            size="large"
-            variant="contained"
-            onClick={() => {
-              onComplete(transaction, undefined);
-              setLoader(true);
-            }}
-          >
-            Continue
-            {loader && (
-              <CircularProgress
-                size={24}
-                sx={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  marginTop: '-12px',
-                  marginLeft: '-12px',
-                }}
-              />
-            )}
-          </Button>
-        </Stack>
-      </CardActions>
-    </>
-  );
+// TODO: ここでTransactionsを変更する処理(HyperBobTransactionでやっていた処理)を実装する
+const Transaction: FC<Props> = ({ transaction, onComplete }) => {
+  const backgroundDispatch = useBackgroundDispatch();
+  // // transactionRequestのstateを変更する
+  useEffect(() => {
+    console.log({ transaction });
+    const transactions: EthersTransactionRequest[] = [];
+    const init = async () => {
+      await backgroundDispatch(
+        sendTransactionsRequest({
+          transactionsRequest: [...transactions, transaction],
+          origin: '',
+        })
+      );
+    };
+    init();
+    onComplete(transaction, undefined);
+  }, [backgroundDispatch, onComplete, transaction]);
+
+  return <></>;
 };
 
 export default Transaction;

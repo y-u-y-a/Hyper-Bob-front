@@ -1,39 +1,38 @@
 import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CircularProgress,
-  Container,
+  BoxProps,
   FormControl,
   FormGroup,
   InputAdornment,
-  InputLabel,
-  OutlinedInput,
-  Stack,
   Typography,
 } from '@mui/material';
-import React, { useCallback } from 'react';
-import Header from '../../components/header';
+import React, { FC, useCallback, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ethers } from 'ethers';
+import SendRoundedIcon from '@mui/icons-material/SendRounded';
+import Header from '../../components/header';
 import { useBackgroundSelector } from '../../hooks';
 import { getActiveAccount } from '../../../Background/redux-slices/selectors/accountSelectors';
-import { useNavigate } from 'react-router-dom';
+import { Center } from '../../../../components/Center';
+import { BorderBox } from '../../../../components/BorderBox';
+import { HeadTitle } from '../../../../components/HeadTitle';
+import { Button } from '../../../../components/Button';
+import { FormInput } from '../../../../components/FormInput';
+import { colors } from '../../../../config/const';
 
-const TransferAsset = () => {
+type Props = BoxProps & {};
+
+const TransferAsset: FC<Props> = ({ ...props }) => {
   const navigate = useNavigate();
-  const [toAddress, setToAddress] = React.useState<string>('');
-  const [value, setValue] = React.useState<string>('');
-  const [error, setError] = React.useState<string>('');
+  const [toAddress, setToAddress] = useState<string>('');
+  const [value, setValue] = useState<string>('');
+  const [error, setError] = useState<string>('');
   const activeAccount = useBackgroundSelector(getActiveAccount);
-  const [loader, setLoader] = React.useState<boolean>(false);
 
   const sendEth = useCallback(async () => {
     if (!ethers.utils.isAddress(toAddress)) {
       setError('Invalid to address');
       return;
     }
-    setLoader(true);
     setError('');
 
     if (window.ethereum) {
@@ -54,85 +53,75 @@ const TransferAsset = () => {
       console.log(txHash);
       navigate('/');
     }
-    setLoader(false);
   }, [activeAccount, navigate, toAddress, value]);
 
   return (
-    <Container sx={{ width: '62vw', height: '100vh' }}>
-      <Header />
-      <Card sx={{ ml: 4, mr: 4, mt: 2, mb: 2 }}>
-        <CardContent>
-          <Box
-            component="div"
-            display="flex"
-            flexDirection="row"
-            justifyContent="center"
-            alignItems="center"
-            sx={{
-              borderBottom: '1px solid rgba(0, 0, 0, 0.20)',
-              position: 'relative',
-            }}
+    <Center
+      minHeight="100vh"
+      height="100%"
+      width="60%"
+      marginX="auto"
+      {...props}
+    >
+      <Header mb={2} />
+      <BorderBox>
+        <HeadTitle title="Transfer ETH" />
+        <Typography marginBottom={4} width="100%" variant="body1" color="white">
+          Please Enter below.
+        </Typography>
+        <FormGroup sx={{ width: '100%' }}>
+          {/* To */}
+          <FormControl
+            sx={{ marginBottom: 2, width: '100%' }}
+            variant="outlined"
           >
-            <Typography variant="h6">Transfer Eth</Typography>
-          </Box>
-          <Box
-            component="div"
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="center"
-            sx={{ mt: 4 }}
+            <FormInput
+              value={toAddress}
+              onChange={(e) => setToAddress(e.target.value)}
+              placeholder="Send to"
+            />
+          </FormControl>
+          {/* Value */}
+          <FormControl
+            sx={{ marginBottom: 2, width: '100%' }}
+            variant="outlined"
           >
-            <FormGroup sx={{ p: 2, pt: 4 }}>
-              <FormControl sx={{ m: 1, width: 300 }} variant="outlined">
-                <InputLabel htmlFor="password">Send to</InputLabel>
-                <OutlinedInput
-                  value={toAddress}
-                  onChange={(e) => setToAddress(e.target.value)}
-                  autoFocus
-                  label="Send to"
+            <FormInput
+              endAdornment={
+                <InputAdornment
+                  position="end"
+                  sx={{
+                    '& .css-1pnmrwp-MuiTypography-root': {
+                      color: colors.placeholder,
+                    },
+                  }}
+                  children="ETH"
                 />
-              </FormControl>
-              <FormControl sx={{ m: 1, width: 300 }} variant="outlined">
-                <InputLabel htmlFor="password">Value</InputLabel>
-                <OutlinedInput
-                  endAdornment={
-                    <InputAdornment position="end">ETH</InputAdornment>
-                  }
-                  value={value}
-                  onChange={(e) => setValue(e.target.value)}
-                  label="Value"
-                />
-              </FormControl>
-              <Typography variant="body1" color="error">
-                {error}
-              </Typography>
-              <Button
-                disabled={loader}
-                onClick={sendEth}
-                sx={{ mt: 4 }}
-                size="large"
-                variant="contained"
-              >
-                Send
-                {loader && (
-                  <CircularProgress
-                    size={24}
-                    sx={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      marginTop: '-12px',
-                      marginLeft: '-12px',
-                    }}
-                  />
-                )}
-              </Button>
-            </FormGroup>
-          </Box>
-        </CardContent>
-      </Card>
-    </Container>
+              }
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              placeholder="Value"
+            />
+          </FormControl>
+          {/* Error */}
+          {error && (
+            <Typography variant="body1" color="error" children={error} />
+          )}
+
+          <Button
+            sx={{ marginLeft: 'auto', marginTop: 8 }}
+            title="Confirm"
+            onClick={sendEth}
+            disabled={!toAddress}
+            icon={
+              <SendRoundedIcon
+                sx={{ color: !toAddress ? colors.disabled : colors.white }}
+              />
+            }
+          ></Button>
+        </FormGroup>
+      </BorderBox>
+    </Center>
   );
 };
 

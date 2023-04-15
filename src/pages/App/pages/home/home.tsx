@@ -1,14 +1,6 @@
-import {
-  Box,
-  Card,
-  CardActions,
-  CardContent,
-  Container,
-  Typography,
-} from '@mui/material';
-import React, { useEffect } from 'react';
+import React from 'react';
+import { Center } from '../../../../components/Center';
 import { getActiveAccount } from '../../../Background/redux-slices/selectors/accountSelectors';
-import AccountActivity from '../../components/account-activity';
 import AccountBalanceInfo from '../../components/account-balance-info';
 import AccountInfo from '../../components/account-info';
 import Header from '../../components/header';
@@ -19,34 +11,14 @@ const Home = () => {
   const activeAccount = useBackgroundSelector(getActiveAccount);
 
   return (
-    <Container sx={{ width: '62vw', height: '100vh' }}>
-      <Header />
-      <Card sx={{ ml: 4, mr: 4, mt: 2, mb: 2 }}>
-        <CardContent>
-          {activeAccount && <AccountInfo address={activeAccount}></AccountInfo>}
-          <Box
-            component="div"
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="center"
-            sx={{ m: 2 }}
-          >
-            <AccountBalanceInfo address={activeAccount} />
-          </Box>
-          <Box
-            component="div"
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="center"
-            sx={{ m: 4 }}
-          >
-            <TransferAssetButton activeAccount={activeAccount || ''} />
-          </Box>
-        </CardContent>
-      </Card>
-    </Container>
+    <Center minHeight="100vh" height="100%" width="60%" marginX="auto">
+      <Header mb={2} />
+      {activeAccount && (
+        <AccountInfo mb={2} address={activeAccount} showOptions={false} />
+      )}
+      <AccountBalanceInfo mb={2} address={activeAccount || ''} />
+      <TransferAssetButton activeAccount={activeAccount || ''} />
+    </Center>
   );
 };
 
