@@ -65,7 +65,10 @@ const TransferAsset: FC<Props> = ({ ...props }) => {
     >
       <Header mb={2} />
       <BorderBox>
-        <HeadTitle marginBottom={4} title="Transfer ETH" />
+        <HeadTitle title="Transfer ETH" />
+        <Typography marginBottom={4} width="100%" variant="body1" color="white">
+          Please Enter below.
+        </Typography>
         <FormGroup sx={{ width: '100%' }}>
           {/* To */}
           <FormControl
@@ -107,7 +110,7 @@ const TransferAsset: FC<Props> = ({ ...props }) => {
 
           <Button
             sx={{ marginLeft: 'auto', marginTop: 8 }}
-            title="Send"
+            title="Confirm"
             onClick={sendEth}
             disabled={!toAddress}
             icon={

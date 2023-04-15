@@ -16,7 +16,7 @@ export const RejectButton: FC<Props> = ({
 }) => {
   const enabledStyle = {
     color: colors.error,
-    background: 'rgba(142, 142, 142, 0.16)',
+    background: 'rgba(142, 142, 142, 0.2)',
     ':hover': { opacity: 0.8 },
   };
   const disabledStyle = {};

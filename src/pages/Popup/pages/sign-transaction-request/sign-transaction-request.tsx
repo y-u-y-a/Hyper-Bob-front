@@ -53,46 +53,10 @@ const SignTransactionConfirmation: FC<Props> = ({
   activeNetwork,
   activeAccount,
   accountInfo,
-  originPermission,
   transactions,
-  userOp,
   onReject,
   onSend,
 }) => {
-  // const backgroundDispatch = useBackgroundDispatch();
-  const [showAddPaymasterUI] = useState<boolean>(false);
-  // const [addPaymasterLoader, setAddPaymasterLoader] = useState<boolean>(false);
-  // const [paymasterError, setPaymasterError] = useState<string>('');
-  // const [paymasterUrl, setPaymasterUrl] = useState<string>('');
-
-  // const addPaymaster = useCallback(async () => {
-  //   console.log(paymasterUrl);
-  //   setAddPaymasterLoader(true);
-  //   if (paymasterUrl) {
-  //     const paymasterRPC = new ethers.providers.JsonRpcProvider(paymasterUrl, {
-  //       name: 'Paymaster',
-  //       chainId: parseInt(activeNetwork.chainID),
-  //     });
-  //     try {
-  //       const paymasterResp = await paymasterRPC.send(
-  //         'eth_getPaymasterAndDataSize',
-  //         [userOp]
-  //       );
-  //       backgroundDispatch(
-  //         setUnsignedUserOperation({
-  //           ...userOp,
-  //           paymasterAndData: paymasterResp,
-  //           verificationGasLimit: paymasterResp.verificationGasLimit,
-  //         })
-  //       );
-  //     } catch (e) {
-  //       console.log(e);
-  //       setPaymasterError('Paymaster url returned error');
-  //     }
-  //     setAddPaymasterLoader(false);
-  //   }
-  // }, [activeNetwork.chainID, backgroundDispatch, paymasterUrl, userOp]);
-
   return (
     <Box px={2} color="white">
       <Typography
@@ -105,73 +69,6 @@ const SignTransactionConfirmation: FC<Props> = ({
         <AccountInfo activeAccount={activeAccount} accountInfo={accountInfo} />
       )}
       <Stack spacing={2} sx={{ position: 'relative', pt: 2, mb: 4 }}>
-        {/* NOTE: Original Info */}
-        {/* <OriginInfo permission={originPermission} /> */}
-        {/* NOTE: Paymaster Info */}
-        {/* <Typography variant="h6" sx-={{ p: 2 }}>
-          Paymaster Info
-        </Typography>
-        {!showAddPaymasterUI && (
-          <Paper sx={{ p: 2 }}>
-            <Typography variant="body2">
-              {userOp.paymasterAndData === '0x'
-                ? 'No paymaster has been used'
-                : ';'}
-            </Typography>
-            <Button onClick={() => setShowAddPaymasterUI(true)} variant="text">
-              Add custom
-            </Button>
-          </Paper>
-        )}
-        {showAddPaymasterUI && (
-          <Paper sx={{ p: 2 }}>
-            <TextField
-              value={paymasterUrl}
-              onChange={(e) => setPaymasterUrl(e.target.value)}
-              sx={{ width: '100%' }}
-              label="Paymaster URL"
-              variant="standard"
-            />
-            {paymasterError}
-            <Box
-              justifyContent="space-around"
-              alignItems="center"
-              display="flex"
-              sx={{ p: '16px 0px' }}
-            >
-              <Button
-                sx={{ width: 150 }}
-                variant="outlined"
-                onClick={() => {
-                  setShowAddPaymasterUI(false);
-                  setAddPaymasterLoader(false);
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                disabled={addPaymasterLoader}
-                sx={{ width: 150, position: 'relative' }}
-                variant="contained"
-                onClick={addPaymaster}
-              >
-                Add
-                {addPaymasterLoader && (
-                  <CircularProgress
-                    size={24}
-                    sx={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      marginTop: '-12px',
-                      marginLeft: '-12px',
-                    }}
-                  />
-                )}
-              </Button>
-            </Box>
-          </Paper>
-        )} */}
         {/* Transactions Data */}
         <Typography
           mt={2}
@@ -209,18 +106,16 @@ const SignTransactionConfirmation: FC<Props> = ({
           ))}
         </Stack>
       </Stack>
-      {!showAddPaymasterUI && (
-        <Stack
-          display="flex"
-          flexDirection="row"
-          alignItems="center"
-          justifyContent="space-between"
-        >
-          <RejectButton fullWidth title="Reject" onClick={onReject} />
-          <Box width="32px" />
-          <Button fullWidth title="Send" onClick={onSend} />
-        </Stack>
-      )}
+      <Stack
+        display="flex"
+        flexDirection="row"
+        alignItems="center"
+        justifyContent="space-between"
+      >
+        <RejectButton fullWidth title="Reject" onClick={onReject} />
+        <Box width="32px" />
+        <Button fullWidth title="Send" onClick={onSend} />
+      </Stack>
     </Box>
   );
 };
@@ -258,6 +153,7 @@ const SignTransactionRequest = () => {
     })
   );
 
+  /**TODO: 確認画面のSendボタン押下後の処理 */
   const onSend = useCallback(
     async (_context?: any) => {
       // TODO: _contextのオブジェクトをJSONパースしてもエラーとなる
