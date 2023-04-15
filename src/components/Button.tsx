@@ -42,7 +42,7 @@ export const Button: FC<Props> = ({
         variant="h6"
         sx={{ color: disabled ? colors.disabled : colors.white }}
       >
-        {title}
+        {title || children}
       </Typography>
       {icon}
     </MuiButton>

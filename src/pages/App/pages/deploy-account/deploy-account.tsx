@@ -26,6 +26,7 @@ import { useNavigate } from 'react-router-dom';
 import { Center } from '../../../../components/Center';
 import { BorderBox } from '../../../../components/BorderBox';
 import { Button } from '../../../../components/Button';
+import { colors } from '../../../../config/const';
 
 const DeployAccount = () => {
   const navigate = useNavigate();
@@ -96,6 +97,7 @@ const DeployAccount = () => {
     return () => clearInterval(timer);
   }, [activeAccount, backgroundDispatch, isButtonDisabled]);
 
+  /** Step2: Deploy Account */
   const deployAcount = useCallback(async () => {
     if (!activeAccount) return;
     setDeployLoader(true);
@@ -135,7 +137,18 @@ const DeployAccount = () => {
         <Typography variant="h6" children="Perform the following steps:" />
         <Stepper activeStep={isButtonDisabled ? 0 : 1} orientation="vertical">
           <Step key={0}>
-            <StepLabel optional={null} children="Transfer Funds" />
+            <StepLabel
+              optional={null}
+              children="Transfer Funds"
+              sx={{
+                '& .css-1hv8oq8-MuiStepLabel-label.Mui-active': {
+                  color: `${colors.white} !important`,
+                },
+                '& .css-1hv8oq8-MuiStepLabel-label.Mui-completed': {
+                  color: `${colors.disabled} !important`,
+                },
+              }}
+            />
             <StepContent>
               <Typography mb={1}>
                 Transfer more than{' '}
@@ -149,7 +162,21 @@ const DeployAccount = () => {
             </StepContent>
           </Step>
           <Step key={1}>
-            <StepLabel optional={null} children="Initiate Deploy Transaction" />
+            <StepLabel
+              optional={null}
+              children="Initiate Deploy Transaction"
+              sx={{
+                '& .css-1hv8oq8-MuiStepLabel-label': {
+                  color: `${colors.disabled} !important`,
+                },
+                '& .css-1hv8oq8-MuiStepLabel-label.Mui-active': {
+                  color: `${colors.white} !important`,
+                },
+                '& .css-1hv8oq8-MuiStepLabel-label.Mui-completed': {
+                  color: `${colors.disabled} !important`,
+                },
+              }}
+            />
             <StepContent>
               <Typography
                 children="Initiate the deployment transaction, it may take some time for
