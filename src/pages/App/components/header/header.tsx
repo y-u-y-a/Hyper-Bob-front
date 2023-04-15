@@ -57,12 +57,20 @@ const Header: FC<Props> = ({ ...props }) => {
           onChange={switchActiveNetwork}
           sx={{
             color: colors.white,
+            '& label': {
+              color: `${colors.gray} !important`,
+            },
+            '& label.Mui-focused': {
+              color: `${colors.gray} !important`,
+            },
             '& fieldset': {
-              borderColor: colors.gray,
+              outline: 'none',
+              borderColor: `${colors.gray} !important`,
             },
             '& svg': {
               color: colors.white,
             },
+            '&:hover fieldset': {},
           }}
         >
           {supportedNetworks.map((network) => (

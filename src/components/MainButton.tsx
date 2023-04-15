@@ -12,6 +12,7 @@ export const MainButton: FC<Props> = ({
   title,
   sx,
   icon,
+  disabled,
   ...props
 }) => {
   return (
@@ -26,9 +27,10 @@ export const MainButton: FC<Props> = ({
         borderRadius: 2,
         backdropFilter: 'blur(9px)',
         color: colors.white,
-        background: 'rgba(30, 30, 30, 0.38)',
+        backgroundColor: 'rgba(30, 30, 30, 0.38)',
         boxShadow:
           '0px 32px 32px -8px rgba(0, 0, 0, 0.08), 0px 0px 32px -8px rgba(0, 0, 0, 0.12),',
+        '&:hover': disabled ? {} : { background: colors.purple },
         ...sx,
       }}
       {...props}

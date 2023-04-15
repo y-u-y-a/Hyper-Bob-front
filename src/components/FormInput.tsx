@@ -16,16 +16,14 @@ export const FormInput: FC<OutlinedInputProps> = ({ sx, ...props }) => {
         '& input[placeholder=*]': {
           color: `${colors.white} !important`,
         },
-        '& fieldset': {
-          boxShadow: 'none !important',
-          borderColor: colors.placeholder,
-        },
-        '&:hover fieldset': {
+        '& input': {
           outline: 'none',
-          boxShadow: 'none !important',
-          borderColor: `${colors.placeholder} !important`,
         },
-        // '& .Mui-focused': {},
+        '& fieldset': {
+          outline: 'none',
+          borderColor: `${colors.gray} !important`,
+        },
+        '&:hover fieldset': {},
         ...sx,
       }}
       {...props}
